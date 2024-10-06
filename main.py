@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends
 from dotenv import load_dotenv
-from models import UsuariosResenas
+from models import UsuariosResenas, LibrosPeor
 
 import os
 import funciones
@@ -12,7 +12,12 @@ API_COMENTARIOS=os.getenv("API_COMENTARIOS")
 app = FastAPI()
 
 @app.get("/nombres_mas_resenas")
-def nombres__con_mas_resenas() -> UsuariosResenas:
+def nombres_con_mas_resenas() -> UsuariosResenas:
 
     return funciones.usuarios_resenas()
+
+@app.get("/libros_peor_resenados")
+def libros_peor_resenados() -> LibrosPeor:
+
+    return funciones.peor_criticado()
 

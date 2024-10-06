@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from models import Usuario, UsuariosResenas
+from models import Usuario, UsuariosResenas, PrecioPeor, LibrosPeor
 
 import requests
 import os
@@ -9,6 +9,7 @@ load_dotenv()
 
 API_GESTION=os.getenv("API_GESTION")
 API_COMENTARIOS=os.getenv("API_COMENTARIOS")
+API_LIBROS=os.getenv("API_LIBROS")
 
 def usuarios_resenas():
 
@@ -44,35 +45,26 @@ def peor_criticado():
     comentarios=requests.get(f"{API_COMENTARIOS}/reviews")
 
     mapa={}
-    minn=100
-    id_libro=-1
 
     for i in comentarios.json():
-        puntuacion=i["puntuacion"]
-        if(minn>puntuacion):
-            id_libro=i["id_libro"]
-            minn=puntuacion
+        id_cliente=i["id_cliente"]
+        if(id_cliente not in mapa): mapa[id_cliente]=i["puntuacion"]
+        else: mapa[id_cliente]+=i["puntuacion"]
 
-    print(id_libro)
-
-    return
-
-    maxx=-1
+    minn=100
 
     for i in mapa:
-        if(maxx<=mapa[i]): maxx=mapa[i]
-
-    respuesta=UsuariosResenas(usuarios=[])
+        if(minn>=mapa[i]): minn=mapa[i]
+    
+    respuesta=LibrosPeor(libros=[])
 
     for i in mapa:
-        if(mapa[i]==maxx): 
+        if(mapa[i]==minn):
             
-            usuario_req=requests.get(f"{API_GESTION}/clientes/{i}")
+            libros_req=requests.get(f"{API_LIBROS}/libros/{i}")
 
-            usuario_req=usuario_req.json()
+            libros_req=libros_req.json()
 
-            respuesta.usuarios.append(Usuario(nombre=usuario_req["nombre"],correo=usuario_req["correo"]))
-            
+            respuesta.libros.append(PrecioPeor(titulo=libros_req["titulo"],puntuacion=minn,precio=libros_req["precio"]))
+
     return respuesta
-
-peor_criticado()
