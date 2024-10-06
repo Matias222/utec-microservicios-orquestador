@@ -9,7 +9,7 @@ load_dotenv()
 
 API_GESTION=os.getenv("API_GESTION")
 API_COMENTARIOS=os.getenv("API_COMENTARIOS")
-app = FastAPI()
+app = FastAPI(title="MV1")
 
 @app.get("/nombres_mas_resenas")
 def nombres_con_mas_resenas() -> UsuariosResenas:

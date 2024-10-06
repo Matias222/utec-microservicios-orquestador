@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  orquestador:
+    build:
+      context: .
+    container_name: orquestador
+    environment:
+      API_GESTION: ${API_GESTION} 
+      API_COMENTARIOS: ${API_COMENTARIOS}   
+      API_LIBROS: ${API_LIBROS}                
+    ports:
+      - "8001:8001"
+    restart: always
